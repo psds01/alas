@@ -2,7 +2,7 @@
 # ignore the full `data` folder and `checkpoints` folder
 /data/
 /checkpoints/
-
+/.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
