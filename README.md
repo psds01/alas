@@ -1,0 +1,1 @@
+# sifal : Sampling Instances for Accelerated Learning
