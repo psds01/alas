@@ -11,6 +11,8 @@ class Config:
     RAW_DATA_FILEPATH = "./data/training_data_for_query_classification.pkl"
     TRAINING_DATA_FILEPATH = "./data/training_data.json"
     TESTING_DATA_FILEPATH = "./data/testing_data.json"
+    FEATURE_MAP_FILEPATH = "./data/feature_map.json"
+    LABEL_MAP_FILEPATH = "./data/label_map.json"
 
     #
     LOG_FORMAT = "%(asctime)s %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"
