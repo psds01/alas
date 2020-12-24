@@ -12,6 +12,8 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
+from config import Config, config
+
 logger = logging.getLogger(__name__)
 
 
@@ -43,7 +45,7 @@ class Dataset(object):
         """
         self.dataset = []
         dataset = json.load(open(filepath, "r"))
-        for item in dataset:
+        for item in tqdm(dataset):
             self.dataset.append(Instance(text=item[0], intent=item[1]))
 
     def __len__(self) -> int:
@@ -59,3 +61,16 @@ class Dataset(object):
     def __iter__(self):
         for instance in self.dataset:
             yield instance
+
+
+def get_train_test_datasets(config: Config) -> List[Dataset]:
+    logger.info("Creating training dataset.")
+    training_dataset = Dataset(config.TRAINING_DATA_FILEPATH)
+    logger.info("Creating testing dataset.")
+    testing_dataset = Dataset(config.TESTING_DATA_FILEPATH)
+    logger.info(
+        "len train dataset = {}, len of test dataset = {}".format(
+            len(training_dataset), len(testing_dataset)
+        )
+    )
+    return training_dataset, testing_dataset
