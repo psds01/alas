@@ -26,13 +26,13 @@ Historically, the machine learning models are trained in the following fashion:
 
 1. Create batches from the dataset.
 2. Define a model.
-3. Optimize the model for each batch for $n\_epoch$ times.
+3. Optimize the model for each batch for `n_epoch` times.
 
 <!-- We can see a few glaring flaws in this approach.  -->
 
 There are a couple of issues with this approach:
-1. As the number of epochs reach $n\_epoch$, there will be certain patterns in the data that the model will have already learned. It makes little sense to include such patterns again in the batches and/or dataset for the model to learn.
-2. The loss from instances where it makes glaring mistakes will be overshadowed by accumulated marginal loss from the trivial/almost-learned instances. The algebraic correlation $He:Doctor::she:Nurse$ from `word2vec` is an (in)famous example of this.
+1. As the number of epochs reach `n_epoch`, there will be certain patterns in the data that the model will have already learned. It makes little sense to include such patterns again in the batches and/or dataset for the model to learn.
+2. The loss from instances where it makes glaring mistakes will be overshadowed by accumulated marginal loss from the trivial/almost-learned instances. The algebraic correlation `He:Doctor::she:Nurse` from `word2vec` is an (in)famous example of this.
 
 ### Can we do better? 
 The main question we are trying to ask here and get an answer to is:
@@ -48,9 +48,9 @@ Well, what exactly? What would be so interesting if we sorted the dataset descen
 
 1. Since we know the loss for each instance in the dataset, we can manually check instances with highest losses and lowest losses. This can be done at each epoch but makes sense to do it at the end of the training to assess which classes are harder to learn.
 2. We can plot the distribution of labels for each decile in the loss range. Alternatively, we can plot the most frequent label for each decile in the loss range.
-3. We can learn from the top $x\%$ of the instance population and see if the loss also reduces for the remaining $(100-x)\%$ of the instance population _and_ the test dataset.
-4. We can learn from the instances that cover the top $x\%$ of the total dataset loss and learn from those and test accordingly.
-5. We can learn from the instances that cover the bottom $x\%$ (of the total dataset loss or the total instance population) and test accordingly. Will this optimization get stuck in the crest region of the hyperspaces?
+3. We can learn from the top `x%` of the instance population and see if the loss also reduces for the remaining `(100-x)%` of the instance population _and_ the test dataset.
+4. We can learn from the instances that cover the top `x%` of the total dataset loss and learn from those and test accordingly.
+5. We can learn from the instances that cover the bottom `x%` (of the total dataset loss or the total instance population) and test accordingly. Will this optimization get stuck in the crest region of the hyperspaces?
 6. Can we draw/address parallels to the societal biases from this procedure?
 
 ## Experimental Setup
@@ -62,26 +62,26 @@ To test the suggestion given by Karpathy and address the flaws of traditional ML
 
 _Traditional Method_
 
-We will train the model as usual: train the model $n\_epochs$ times, on each instance from the dataset, irrespective of the prediction error on the instance. This is how the ML models are trained and will use this as the benchmark for comparing other strategies.
+We will train the model as usual: train the model `n_epochs` times, on each instance from the dataset, irrespective of the prediction error on the instance. This is how the ML models are trained and will use this as the benchmark for comparing other strategies.
 
 #### Population Based Optimization Strategy : `%tile`
 
 _Percentile Sampling of Instances_
 
-For every epoch, **Sort the dataset descending by loss from each instance**, take the top $x\%$ of this _sorted instance populaion_ and train the model on losses from these instances. 
+For every epoch, **Sort the dataset descending by loss from each instance**, take the top `x%` of this _sorted instance populaion_ and train the model on losses from these instances. 
 
 #### Percentage Based Optimization Strategy : `%age`
 
 _Percentage Sampling of Instances_
 
-For every epoch, **Sort the dataset descending by loss from each instance**, take instances which contribute to the top $x\%$ of _total loss from the dataset_ and train the model on losses from these instances.
+For every epoch, **Sort the dataset descending by loss from each instance**, take instances which contribute to the top `x%` of _total loss from the dataset_ and train the model on losses from these instances.
 
 
 ### Dataset
 
 The dataset for this experiment is an NLP dataset of intent classification on _real_ customer queries where the text is the query from a customer and the intent is the label given to it by the Customer Support Agent.
 
-There are in total $15K+$ instances in the dataset with $32$ intent types. The $train:test$ split of the dataset is $70:30$. The sample distribution by label can be found here [#TODO](INSERT_LABEL_DISTRIBUTION_IMG).
+There are in total `15K+` instances in the dataset with `32` intent types. The `train:test` split of the dataset is `70:30`. The sample distribution by label can be found here [#TODO](INSERT_LABEL_DISTRIBUTION_IMG).
 
 An instance from the dataset:
 ```
@@ -107,7 +107,7 @@ BoW Features --> Input Layer --> Hidden Layer --> Output Layer
 
 ### Optimization
 
-For optimization, we use the $3$ strategies mentioned in the [Task](#Task) section above.
+For optimization, we use the `3` strategies mentioned in the [Task](#Task) section above.
 
 ### Evaluation
 
@@ -117,7 +117,7 @@ We have a number of way to evaluate this experiment:
 2. The distribution of labels after training/certain epochs for each training strategy.
 3. The distribution of weights after training/certain epochs for each training strategy.
 4. Sparsity of weights during and/or after training for each training strategy.
-5. KL Divergence of weights during and/or after training for each training strategy: from $0$, $1$, init weights and optimized weights using base strategy, does it increase or decrease? 
+5. KL Divergence of weights during and/or after training for each training strategy: from `0`, `1`, init weights and optimized weights using base strategy, does it increase or decrease? 
 6. More the KL, more the learning??
 
 
