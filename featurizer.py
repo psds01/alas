@@ -17,15 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 class Featurizer(object):
-    def __init__(self, datasets: List[Dataset], min_count: int):
+    def __init__(self, config: Config):
         """
         Inputs:
         -------
-            datasets: list of train, test(, dev) datasets
-            min_count: min count of ngrams
+            config: Config object
         """
-        self.datasets = datasets
-        self.min_count = min_count
+        self.config = config
         self.feature_map = {}
         self.label_map = {}
 
