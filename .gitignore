@@ -1,7 +1,7 @@
 
 # ignore the full `data` folder and `checkpoints` folder
 /data/
-/checkpoints/
+/ckpts/
 /.vscode/
 
 # Byte-compiled / optimized / DLL files
