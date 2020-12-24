@@ -6,7 +6,7 @@ import os
 import pickle
 import typing
 from collections import defaultdict
-from typing import Any, Dict, List, Text, Union
+from typing import Any, Dict, List, Text, Tuple, Union
 
 import numpy as np
 import torch
@@ -36,17 +36,26 @@ class Instance(object):
 class Dataset(object):
     """A dataset object: a list of instances with few functionalities."""
 
-    def __init__(self):
-        pass
+    def __init__(self, filepath: os.PathLike):
+        """
+        Inputs:
+            filepath: filepath where the data is stored in `[(text, intent),..., ]` format 
+        """
+        self.dataset = []
+        dataset = json.load(open(filepath, "r"))
+        for item in dataset:
+            self.dataset.append(Instance(text=item[0], intent=item[1]))
 
-    def __len__(self):
-        pass
+    def __len__(self) -> int:
+        return len(self.dataset)
 
-    def __str__(self):
-        pass
+    def __str__(self) -> Text:
+        return "Dataset: len={}".format(len(self))
 
-    def __repr__(self):
-        pass
+    def __repr__(self) -> Text:
+        # Bad practice
+        return self.__str__()
 
     def __iter__(self):
-        pass
+        for instance in self.dataset:
+            yield instance
