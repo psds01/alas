@@ -17,26 +17,57 @@ logger = logging.getLogger(__name__)
 
 
 class Featurizer(object):
-    def __init__(self):
-        pass
+    def __init__(self, datasets: List[Dataset], min_count: int):
+        """
+        Inputs:
+        -------
+            datasets: list of train, test(, dev) datasets
+            min_count: min count of ngrams
+        """
+        self.datasets = datasets
+        self.min_count = min_count
+        self.feature_map = {}
+        self.label_map = {}
+
+    def preprocess(self, text: Text) -> Text:
+        """
+        1. lower case 
+        2. Replace all digits by 0
+        3. Split at special characters
+        """
+        text = str(text).lower()
+        text = re.sub(r"\d", "0", text)
+        return " ".join(re.split(r"\W+", text)).strip()
+
+    def get_ngrams(self, text: Text) -> Dict:
+        grams = defaultdict(int)
+        text = self.preprocess(text)
+        # collect unigrams
+        for ch in text:
+            grams[ch] += 1
+
+        # collect bigrams
+        for chs in zip(text, text[1:]):
+            grams["".join(chs)] += 1
+
+        return grams
+
+    def featurize(self, text: Text) -> np.ndarray:
+        arr = np.zeros(len(self.feature_map))
+        grams = self.get_ngrams(text)
+        for grm, count in grams.items():
+            if grm in self.feature_map:
+                arr[self.feature_map[grm]] += count
+        return arr
+
+    def encode_label(self, label: Text) -> np.ndarray:
+        return np.array([self.label_map[label]])
 
     def load_from_file(self):
-        pass
-
-    def preprocess(self):
-        pass
-
-    def get_ngrams(self):
-        pass
-
-    def train(self):
         pass
 
     def save_to_file(self):
         pass
 
-    def featurize(self):
-        pass
-
-    def encode_label(self):
+    def train(self):
         pass
