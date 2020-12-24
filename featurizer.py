@@ -77,5 +77,5 @@ class Featurizer(object):
         logger.info("Saved featurizer attributes.")
         return True
 
-    def train(self):
+    def train(self, datasets: List[Dataset]):
         pass
