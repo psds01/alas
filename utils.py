@@ -31,3 +31,22 @@ class Instance(object):
 
     def __repr__(self):
         return self.__str__()
+
+
+class Dataset(object):
+    """A dataset object: a list of instances with few functionalities."""
+
+    def __init__(self):
+        pass
+
+    def __len__(self):
+        pass
+
+    def __str__(self):
+        pass
+
+    def __repr__(self):
+        pass
+
+    def __iter__(self):
+        pass
