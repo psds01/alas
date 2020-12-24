@@ -62,10 +62,20 @@ class Featurizer(object):
         return np.array([self.label_map[label]])
 
     def load_from_file(self):
-        pass
+        logger.info("Loading feature map.")
+        self.feature_map = json.load(open(self.config.FEATURE_MAP_FILEPATH, "r"))
+        logger.info("Loading label map.")
+        self.label_map = json.load(open(self.config.LABEL_MAP_FILEPATH, "r"))
+        logger.info("Featurizer attributes loaded.")
+        return True
 
     def save_to_file(self):
-        pass
+        logger.info("Saving feature map.")
+        json.dump(self.feature_map, open(self.config.FEATURE_MAP_FILEPATH, "w"))
+        logger.info("Saving label map.")
+        json.dump(self.label_map, open(self.config.LABEL_MAP_FILEPATH, "w"))
+        logger.info("Saved featurizer attributes.")
+        return True
 
     def train(self):
         pass
