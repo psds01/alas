@@ -24,12 +24,12 @@ class Instance(object):
         # loss from this instance
         self.loss = 0
 
-    def __str__(self):
+    def __str__(self) -> Text:
         return "<< Text={},\nIntent={},\nloss={}>>".format(
             self.text, self.intent, self.loss
         )
 
-    def __repr__(self):
+    def __repr__(self) -> Text:
         return self.__str__()
 
 
