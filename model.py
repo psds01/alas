@@ -8,4 +8,12 @@ import torch.nn.functional as F
 
 
 class NNModel(nn.Module):
-    pass
+    def __init__(self, n_features: int, n_hidden: int, n_classes: int):
+        super(NNModel, self).__init__()
+        self.fc1 = nn.Linear(n_features, n_hidden)
+        self.fc2 = nn.Linear(n_hidden, n_classes)
+
+    def forward(self, x):
+        x = torch.sigmoid(self.fc1(x))
+        x = self.fc2(x)
+        return x
