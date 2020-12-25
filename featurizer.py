@@ -95,7 +95,7 @@ class Featurizer(object):
             for gram, count in tracker.items()
             if count >= self.config.MIN_NGRAM_COUNT
         }
-        tracker = sorted(tracker.key())
+        tracker = sorted(tracker.keys())
         tracker = {gram: index for index, gram in enumerate(tracker)}
         self.feature_map = tracker
         logger.info("Feature map created.")
