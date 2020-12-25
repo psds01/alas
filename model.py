@@ -7,6 +7,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ class NNModel(nn.Module):
         return x
 
 
-def get_net(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.PathLike):
+def get_net_criterion_optimizer(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.PathLike):
     """
     Utility to define and INITIALIZE the model
     with the same weights for different runs.
@@ -36,5 +37,11 @@ def get_net(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.Pa
         torch.save(net.state_dict(), init_filepath)
     logger.info("Initializing model with saved weights.")
     net.load_state_dict(torch.load(init_filepath))
+
+    logger.info("Creating Criterion.")
+    criterion = nn.CrossEntropyLoss()
+    logger.info("Creating Optimizer.")
+    optimizer = optim.Adam(net.parameters(), lr=0.001)
+    optimizer.zero_grad()
     logger.info("Done.")
-    return net
+    return net, criterion, optimizer
