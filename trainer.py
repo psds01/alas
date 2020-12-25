@@ -43,6 +43,13 @@ class OptimizationStrategy:
         top_frac: float = 1.0,
         config: Config = config,
     ):
+        """
+        `experiment_id` :The initial source of randomness 
+                    remains the same throughout an experiment.
+        `top_frac` :for the same run of experiment (aka same source or randomness
+                    aka model is initialized with the same weights), different %
+                    tile/age population
+        """
         self.experiment_id = experiment_id
         self.net = net
         self.criterion = criterion
