@@ -80,8 +80,10 @@ class Featurizer(object):
     def train(self, datasets: List[Dataset]):
         logger.info("Training featurizer.")
         tracker = defaultdict(int)
+        labels = set()
         for dataset in datasets:
             for instance in tqdm(dataset):
+                labels.add(instance.intent)
                 n_grams = self.get_ngrams(instance.text)
                 for gram, count in n_grams.items():
                     tracker[gram] += count
@@ -94,3 +96,7 @@ class Featurizer(object):
         tracker = sorted(tracker.key())
         tracker = {gram: index for index, gram in enumerate(tracker)}
         self.feature_map = tracker
+
+        labels = sorted(labels)
+        labels = {label: index for index, label in enumerate(labels)}
+        self.label_map = labels
