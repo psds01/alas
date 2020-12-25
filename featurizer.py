@@ -100,3 +100,5 @@ class Featurizer(object):
         labels = sorted(labels)
         labels = {label: index for index, label in enumerate(labels)}
         self.label_map = labels
+
+        self.save_to_file()
