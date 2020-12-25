@@ -204,6 +204,14 @@ class TopPopulationStrategy(OptimizationStrategy):
     def __init__(self, *args):
         super().__init__(*args)
 
+    def get_optimized_dataset(self) -> Dataset:
+        length = int(self.top_frac * len(self.train_dataset)) + 1
+        sorted_train_dataset = sorted(
+            self.train_dataset, key=lambda x: x.loss, reverse=True
+        )
+        sorted_train_dataset = sorted_train_dataset[:length]
+        return sorted_train_dataset
+
 
 class TopPercentageStrategy(OptimizationStrategy):
     name = "TopPercentageStrategy"
