@@ -2,7 +2,7 @@ import logging
 
 from config import config
 from featurizer import Featurizer
-from model import get_net
+from model import get_net_criterion_optimizer
 from trainer import BaseStrategy, TopPercentageStrategy, TopPopulationStrategy
 from utils import get_train_test_datasets
 
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     n_hidden = config.HIDDEN_DIM
     n_classes = len(featurizer.label_map)
     init_filepath = config.INIT_MODEL_PATH
-    net = get_net(
+    net, criterion, optimizer = get_net_criterion_optimizer(
         n_features=n_features,
         n_hidden=n_hidden,
         n_classes=n_classes,
