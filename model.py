@@ -17,3 +17,13 @@ class NNModel(nn.Module):
         x = torch.sigmoid(self.fc1(x))
         x = self.fc2(x)
         return x
+
+
+def get_net(n_features, n_hidden, n_classes, init_filepath):
+    """
+    Utility to define and INITIALIZE the model
+    with the same weights for different runs.
+    """
+    net = NNModel(n_features, n_hidden, n_classes)
+    net.load_state_dict(torch.load(init_filepath))
+    return net
