@@ -3,6 +3,7 @@ import logging
 from config import config
 from featurizer import Featurizer
 from model import get_net
+from trainer import BaseStrategy, TopPercentageStrategy, TopPopulationStrategy
 from utils import get_train_test_datasets
 
 logger = logging.getLogger(__name__)
@@ -52,3 +53,35 @@ if __name__ == "__main__":
         n_classes=n_classes,
         init_filepath=init_filepath,
     )
+
+    logger.info("Testing Opt strats.")
+
+    params = list(range(7))
+    trainer = BaseStrategy(*params)
+
+    def get_sample_print(trainer):
+        return "::".join(
+            map(
+                str,
+                [
+                    trainer.name,
+                    trainer.net,
+                    trainer.criterion,
+                    trainer.optimizer,
+                    trainer.train_dataset,
+                    trainer.test_dataset,
+                    trainer.n_epochs,
+                    trainer.top_frac,
+                ],
+            )
+        )
+
+    logger.info(get_sample_print(trainer))
+
+    params = [x + 1 for x in params]
+    trainer = TopPopulationStrategy(*params)
+    logger.info(get_sample_print(trainer))
+
+    params = [x + 5 for x in params]
+    trainer = TopPercentageStrategy(*params)
+    logger.info(get_sample_print(trainer))
