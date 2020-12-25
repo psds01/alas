@@ -7,7 +7,7 @@ class Config:
     TRAIN_SPLIT = 0.7
     MIN_NGRAM_COUNT = 16
     HIDDEN_DIM = 256
-    SAVE_EVERY = 5
+    SAVE_EVERY = 1
 
     # filepaths
     RAW_DATA_FILEPATH = "./data/training_data_for_query_classification.pkl"
