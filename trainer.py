@@ -193,6 +193,10 @@ class BaseStrategy(OptimizationStrategy):
     def __init__(self, *args):
         super().__init__(*args)
 
+    def get_optimized_dataset(self) -> Dataset:
+        dataset = self.train_dataset
+        return dataset
+
 
 class TopPopulationStrategy(OptimizationStrategy):
     name = "TopPopulationStrategy"
