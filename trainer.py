@@ -72,6 +72,8 @@ class OptimizationStrategy:
 
     def optimize(self):
         # get dataset/instances to optimize the model with.
+        # NOTE: if your dataset does not fit into the memory, create batches
+        # and then optimize the loss
         dataset = self.get_optimized_dataset()
         loss = sum(x.loss for x in dataset) / len(dataset)
         logger.info("Loss during training of {} = {}".format(self.name, loss))
@@ -94,10 +96,57 @@ class OptimizationStrategy:
             filepath.parent.mkdir(parents=True, exist_ok=True)
             pickle.dump(value, open(filepath, "wb"))
 
-    def train(self):
-        pass
+    def save_stats(
+        self,
+        basename: Text,
+        train_y: np.ndarray,
+        test_y: np.ndarray,
+        train_pred: np.ndarray,
+        test_pred: np.ndarray,
+    ) -> None:
+        stats = {
+            "train_y": train_y.tolist(),
+            "test_y": test_y.tolist(),
+            "train_pred": train_pred.tolist(),
+            "test_pred": test_pred.tolist(),
+        }
+        filepath = os.path.join(
+            self.config.BASE_CKPTS_DIR,
+            self.experiment_id,
+            self.name,
+            "stats",
+            "{}.pkl".format(basename),
+        )
+        filepath = pathlib.Path(filepath)
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+        pickle.dump(stats, open(filepath, "wb"))
+        logger.info("stats saved at: {}".format(str(filepath)))
 
-    def evaluate(self):
+    def evaluate(self, epoch: Union[int, Text], save: bool):
+        train_X = torch.stack([x.feature for x in self.train_dataset])
+        test_X = torch.stack([x.feature for x in self.test_dataset])
+
+        # reshape to create a single batch
+        # NOTE: feel free to change this if your data does not fit into memory
+        train_X = train_X.view(train_X.shape[0], -1)
+        test_X = test_X.view(test_X.shape[0], -1)
+
+        # get labels
+        train_y = torch.stack([x.label for x in self.train_dataset]).view(-1).numpy()
+        test_y = torch.stack([x.label for x in self.test_dataset]).view(-1).numpy()
+
+        # get prediction from the model
+        train_pred = self.net(train_X)
+        test_pred = self.net(test_X)
+
+        # get the predicted class indices
+        train_pred = torch.argmax(train_pred, axis=1).numpy()
+        test_pred = torch.argmax(test_pred, axis=1).numpy()
+
+        if save:
+            self.save_stats(epoch, train_y, test_y, train_pred, test_pred)
+
+    def train(self):
         pass
 
 
