@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     logger.info("Testing Opt strats.")
 
-    params = list(range(8))
+    params = list(range(9))
     trainer = BaseStrategy(*params)
 
     def get_sample_print(trainer):
@@ -73,6 +73,7 @@ if __name__ == "__main__":
                     trainer.test_dataset,
                     trainer.n_epochs,
                     trainer.top_frac,
+                    trainer.config,
                 ],
             )
         )
