@@ -2,6 +2,7 @@ import logging
 
 from config import config
 from featurizer import Featurizer
+from model import get_net
 from utils import get_train_test_datasets
 
 logger = logging.getLogger(__name__)
@@ -39,3 +40,15 @@ if __name__ == "__main__":
     )
 
     logger.info((instance.feature.shape, instance.label.shape))
+
+    # sizes
+    n_features = len(featurizer.feature_map)
+    n_hidden = config.HIDDEN_DIM
+    n_classes = len(featurizer.label_map)
+    init_filepath = config.INIT_MODEL_PATH
+    net = get_net(
+        n_features=n_features,
+        n_hidden=n_hidden,
+        n_classes=n_classes,
+        init_filepath=init_filepath,
+    )
