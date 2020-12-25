@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import pathlib
 import pickle
 import re
 import typing
@@ -40,6 +41,7 @@ class OptimizationStrategy:
         test_dataset: Dataset,
         n_epochs: int,
         top_frac: float = 1.0,
+        config: Config = config,
     ):
         self.experiment_id = experiment_id
         self.net = net
@@ -49,6 +51,7 @@ class OptimizationStrategy:
         self.test_dataset = test_dataset
         self.n_epochs = n_epochs
         self.top_frac = top_frac
+        self.config = config
 
     def save_losses(self):
         return NotImplementedError
@@ -76,8 +79,20 @@ class OptimizationStrategy:
         self.optimizer.step()
         logger.info("Network optimized.")
 
-    def save_weights(self, name):
-        pass
+    def save_weights(self, basename: Text):
+        params = self.net.state_dict()
+        for key, value in params.items():
+            filepath = os.path.join(
+                self.config.BASE_CKPTS_DIR,
+                self.experiment_id,
+                self.name,
+                "weights",
+                basename,
+                "{}.pkl".format(key),
+            )
+            filepath = pathlib.Path(filepath)
+            filepath.parent.mkdir(parents=True, exist_ok=True)
+            pickle.dump(value, open(filepath, "wb"))
 
     def train(self):
         pass
