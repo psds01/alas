@@ -68,7 +68,13 @@ class OptimizationStrategy:
         return NotImplementedError
 
     def optimize(self):
-        pass
+        # get dataset/instances to optimize the model with.
+        dataset = self.get_optimized_dataset()
+        loss = sum(x.loss for x in dataset) / len(dataset)
+        logger.info("Loss during training of {} = {}".format(self.name, loss))
+        loss.backward()
+        self.optimizer.step()
+        logger.info("Network optimized.")
 
     def save_weights(self, name):
         pass
