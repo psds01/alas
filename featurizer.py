@@ -8,6 +8,7 @@ from collections import Counter, defaultdict
 from typing import Any, Dict, List, Text, Union
 
 import numpy as np
+import torch
 from tqdm import tqdm
 
 from config import Config, config
@@ -106,3 +107,16 @@ class Featurizer(object):
         logger.info("Label map created.")
 
         self.save_to_file()
+
+    def featurize_datasets(self, datasets: List[Dataset]) -> List[Dataset]:
+        logger.info("Featurizing datasets.")
+        for dataset in datasets:
+            for instance in tqdm(dataset):
+                text, intent = instance.text, instance.intent
+                arr = self.featurize(text)
+                label = torch.Tensor(self.encode_label(intent)).long()
+                arr = torch.Tensor(arr.reshape(1, -1))
+                instance.label = label
+                instance.feature = arr
+        logger.info("Added features and labels to instances from datasets.I")
+        return datasets
