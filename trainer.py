@@ -19,17 +19,44 @@ from utils import Dataset, Instance, get_train_test_datasets
 logger = logging.getLogger(__name__)
 
 
-class OptimizationStrategy(object):
-    pass
+class OptimizationStrategy:
+    name = "OptimizationStrategy"
+
+    def __init__(
+        self,
+        net: nn.Module,
+        criterion: nn.Module,
+        optimizer: optim.Optimizer,
+        train_dataset: Dataset,
+        test_dataset: Dataset,
+        n_epochs: int,
+        top_frac: float = 1.0,
+    ):
+        self.net = net
+        self.criterion = criterion
+        self.optimizer = optimizer
+        self.train_dataset = train_dataset
+        self.test_dataset = test_dataset
+        self.n_epochs = n_epochs
+        self.top_frac = top_frac
 
 
 class BaseStrategy(OptimizationStrategy):
-    pass
+    name = "BaseStrategy"
+
+    def __init__(self, *args):
+        super().__init__(*args)
 
 
 class TopPopulationStrategy(OptimizationStrategy):
-    pass
+    name = "TopPopulationStrategy"
+
+    def __init__(self, *args):
+        super().__init__(*args)
 
 
 class TopPercentageStrategy(OptimizationStrategy):
-    pass
+    name = "TopPercentageStrategy"
+
+    def __init__(self, *args):
+        super().__init__(*args)
