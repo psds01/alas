@@ -24,6 +24,7 @@ class OptimizationStrategy:
 
     def __init__(
         self,
+        experiment_id: Text,
         net: nn.Module,
         criterion: nn.Module,
         optimizer: optim.Optimizer,
@@ -32,6 +33,7 @@ class OptimizationStrategy:
         n_epochs: int,
         top_frac: float = 1.0,
     ):
+        self.experiment_id = experiment_id
         self.net = net
         self.criterion = criterion
         self.optimizer = optimizer
