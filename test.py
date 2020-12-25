@@ -26,10 +26,10 @@ if __name__ == "__main__":
     # featurizer.save_to_file()
     featurizer.load_from_file()
     ft = featurizer.featurize("hello world")
-    logger.info(ft)
+    # logger.info(ft)
     featurizer.featurize_datasets(datasets)
     for dataset in datasets:
-        for instance in datasets:
+        for instance in dataset:
             pass
 
     logger.info(
