@@ -94,15 +94,16 @@ class OptimizationStrategy:
             filepath = os.path.join(
                 self.config.BASE_CKPTS_DIR,
                 self.experiment_id,
-                self.top_frac,
+                str(self.top_frac),
                 self.name,
                 "weights",
-                basename,
+                str(basename),
                 "{}.pkl".format(key),
             )
             filepath = pathlib.Path(filepath)
             filepath.parent.mkdir(parents=True, exist_ok=True)
             pickle.dump(value, open(filepath, "wb"))
+        logger.info("Weights saved in: {}".format(str(filepath.parent)))
 
     def save_stats(
         self,
@@ -121,15 +122,17 @@ class OptimizationStrategy:
         filepath = os.path.join(
             self.config.BASE_CKPTS_DIR,
             self.experiment_id,
-            self.top_frac,
+            str(self.top_frac),
             self.name,
             "stats",
-            "{}.pkl".format(basename),
+            str(basename),
+            "stats.pkl",
         )
+
         filepath = pathlib.Path(filepath)
         filepath.parent.mkdir(parents=True, exist_ok=True)
         pickle.dump(stats, open(filepath, "wb"))
-        logger.info("stats saved at: {}".format(str(filepath)))
+        logger.info("Stats saved at: {}".format(str(filepath)))
 
     def evaluate(self, epoch: Union[int, Text], save: bool):
         train_X = torch.stack([x.feature for x in self.train_dataset])
