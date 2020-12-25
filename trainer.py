@@ -156,7 +156,28 @@ class OptimizationStrategy:
             self.save_stats(epoch, train_y, test_y, train_pred, test_pred)
 
     def train(self):
-        pass
+        logger.info("Training the network with {} strategy.".format(self.name))
+        for epoch in tqdm(range(self.n_epochs)):
+            epoch += 1
+
+            # zero grad
+            self.optimizer.zero_grad()
+
+            # collect losses for all instances
+            self.add_loss_to_dataset()
+
+            # optimize the weights
+            self.optimize()
+
+            # is it time to save
+            to_save = epoch % self.config.SAVE_EVERY == 0
+
+            # save weights or not
+            if to_save:
+                self.save_weights(epoch)
+
+            # eval on train and test dataset
+            self.evaluate(epoch, to_save)
 
 
 class BaseStrategy(OptimizationStrategy):
