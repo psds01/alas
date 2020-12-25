@@ -12,7 +12,8 @@ if __name__ == "__main__":
         format=config.LOG_FORMAT, datefmt=config.DATE_FORMAT, level=logging.INFO,
     )
 
-    training_dataset, testing_dataset = get_train_test_datasets(config)
+    datasets = get_train_test_datasets(config)
+    training_dataset, testing_dataset = datasets
     for instance in training_dataset:
         pass
     logger.info(instance)
@@ -21,5 +22,6 @@ if __name__ == "__main__":
     logger.info(instance)
 
     featurizer = Featurizer(config)
+    featurizer.train(datasets)
     featurizer.save_to_file()
     featurizer.load_from_file()
