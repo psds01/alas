@@ -87,6 +87,7 @@ class OptimizationStrategy:
             filepath = os.path.join(
                 self.config.BASE_CKPTS_DIR,
                 self.experiment_id,
+                self.top_frac,
                 self.name,
                 "weights",
                 basename,
@@ -113,6 +114,7 @@ class OptimizationStrategy:
         filepath = os.path.join(
             self.config.BASE_CKPTS_DIR,
             self.experiment_id,
+            self.top_frac,
             self.name,
             "stats",
             "{}.pkl".format(basename),
