@@ -1,5 +1,7 @@
 import logging
 
+from tqdm import tqdm
+
 from config import config
 from featurizer import Featurizer
 from model import get_net_criterion_optimizer
@@ -28,32 +30,33 @@ if __name__ == "__main__":
     n_hidden = config.HIDDEN_DIM
     n_classes = len(featurizer.label_map)
     init_filepath = config.INIT_MODEL_PATH
-    net, criterion, optimizer = get_net_criterion_optimizer(
-        n_features=n_features,
-        n_hidden=n_hidden,
-        n_classes=n_classes,
-        init_filepath=init_filepath,
-    )
-
     experiment_id = "simple"
-    n_epochs = 2
-    top_frac = 0.5
+    save_every = 2
+    config.SAVE_EVERY = save_every
+    n_epochs = 128
+    for top_frac in tqdm(range(9, 0, -2)):
+        top_frac = round(0.1 * top_frac, 1)
+        logger.info("\n\nRunning expt with top frac = {}".format(top_frac))
+        for trainer in [BaseStrategy, TopPopulationStrategy, TopPercentageStrategy]:
 
-    params = [
-        experiment_id,
-        net,
-        criterion,
-        optimizer,
-        train_dataset,
-        test_dataset,
-        n_epochs,
-        top_frac,
-        config,
-    ]
+            net, criterion, optimizer = get_net_criterion_optimizer(
+                n_features=n_features,
+                n_hidden=n_hidden,
+                n_classes=n_classes,
+                init_filepath=init_filepath,
+            )
 
-    trainer = BaseStrategy(*params)
-    trainer.train()
-    trainer = TopPopulationStrategy(*params)
-    trainer.train()
-    trainer = TopPercentageStrategy(*params)
-    trainer.train()
+            params = [
+                experiment_id,
+                net,
+                criterion,
+                optimizer,
+                train_dataset,
+                test_dataset,
+                n_epochs,
+                top_frac,
+                config,
+            ]
+
+            trainer = trainer(*params)
+            trainer.train()
