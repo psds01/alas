@@ -218,3 +218,18 @@ class TopPercentageStrategy(OptimizationStrategy):
 
     def __init__(self, *args):
         super().__init__(*args)
+
+    def get_optimized_dataset(self):
+        sorted_train_dataset = sorted(
+            self.train_dataset, key=lambda x: x.loss, reverse=True
+        )
+        total_loss = sum(x.loss for x in self.train_dataset)
+        threshold = self.top_frac * total_loss
+        total_loss = 0
+        for index, instance in enumerate(sorted_train_dataset):
+            if total_loss > threshold:
+                break
+            total_loss += instance.loss
+
+        sorted_train_dataset = sorted_train_dataset[:index]
+        return sorted_train_dataset
