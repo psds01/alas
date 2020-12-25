@@ -155,6 +155,13 @@ class OptimizationStrategy:
         if save:
             self.save_stats(epoch, train_y, test_y, train_pred, test_pred)
 
+        mean_acc_train = round(np.mean(train_y == train_pred), 3)
+        mean_acc_test = round(np.mean(test_y == test_pred), 3)
+
+        logger.info(
+            "Mean accuracy: train = {}, test = {}".format(mean_acc_train, mean_acc_test)
+        )
+
     def train(self):
         logger.info("Training the network with {} strategy.".format(self.name))
         for epoch in tqdm(range(self.n_epochs)):
