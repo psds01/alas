@@ -33,7 +33,9 @@ if __name__ == "__main__":
             pass
 
     logger.info(
-        "\nText={}, \nintent={},\nfeature={},\nlabel={}.".format(
-            instance.text, instance.intent, instance.feature, instance.label
+        "\nText={}, \nintent={},\nfeature shape={},\nlabel={}.".format(
+            instance.text, instance.intent, instance.feature.shape, instance.label
         )
     )
+
+    logger.info((instance.feature.shape, instance.label.shape))
