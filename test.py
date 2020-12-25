@@ -25,3 +25,5 @@ if __name__ == "__main__":
     featurizer.train(datasets)
     featurizer.save_to_file()
     featurizer.load_from_file()
+    ft = featurizer.featurize("hello world")
+    logger.info(ft)
