@@ -88,6 +88,8 @@ class Featurizer(object):
                 for gram, count in n_grams.items():
                     tracker[gram] += count
 
+        logger.info("N-grams and labels reviewed.")
+
         tracker = {
             gram: count
             for gram, count in tracker.items()
@@ -96,9 +98,11 @@ class Featurizer(object):
         tracker = sorted(tracker.key())
         tracker = {gram: index for index, gram in enumerate(tracker)}
         self.feature_map = tracker
+        logger.info("Feature map created.")
 
         labels = sorted(labels)
         labels = {label: index for index, label in enumerate(labels)}
         self.label_map = labels
+        logger.info("Label map created.")
 
         self.save_to_file()
