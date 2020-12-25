@@ -27,3 +27,13 @@ if __name__ == "__main__":
     featurizer.load_from_file()
     ft = featurizer.featurize("hello world")
     logger.info(ft)
+    featurizer.featurize_datasets(datasets)
+    for dataset in datasets:
+        for instance in datasets:
+            pass
+
+    logger.info(
+        "\nText={}, \nintent={},\nfeature={},\nlabel={}.".format(
+            instance.text, instance.intent, instance.feature, instance.label
+        )
+    )
