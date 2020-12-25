@@ -19,6 +19,14 @@ from utils import Dataset, Instance, get_train_test_datasets
 logger = logging.getLogger(__name__)
 
 
+def add_loss_to_dataset(dataset: Dataset, net: nn.Module, criterion: nn.Module) -> None:
+    for instance in dataset:
+        feature, label = instance.feature, instance.label
+        output = net(feature)
+        loss = criterion(output, label)
+        instance.loss = loss
+
+
 class OptimizationStrategy:
     name = "OptimizationStrategy"
 
@@ -42,11 +50,22 @@ class OptimizationStrategy:
         self.n_epochs = n_epochs
         self.top_frac = top_frac
 
+    def save_losses(self):
+        return NotImplementedError
+
     def add_loss_to_dataset(self):
-        pass
+        logger.info("{}: Adding loss to training instances".format(self.name))
+        add_loss_to_dataset(
+            dataset=self.train_dataset, net=self.net, criterion=self.criterion
+        )
+
+        logger.info("{}: Adding loss to testing instances".format(self.name))
+        add_loss_to_dataset(
+            dataset=self.test_dataset, net=self.net, criterion=self.criterion
+        )
 
     def get_optimized_dataset(self):
-        pass
+        return NotImplementedError
 
     def optimize(self):
         pass
