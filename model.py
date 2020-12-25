@@ -26,5 +26,8 @@ def get_net(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.Pa
     with the same weights for different runs.
     """
     net = NNModel(n_features, n_hidden, n_classes)
+    # if path does not exist, save and load (redundant!)
+    if not os.path.exists(init_filepath):
+        torch.save(net.state_dict(), init_filepath)
     net.load_state_dict(torch.load(init_filepath))
     return net
