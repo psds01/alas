@@ -1,3 +1,4 @@
+import os
 import typing
 from typing import Any, Dict, List, Union
 
@@ -19,7 +20,7 @@ class NNModel(nn.Module):
         return x
 
 
-def get_net(n_features, n_hidden, n_classes, init_filepath):
+def get_net(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.PathLike):
     """
     Utility to define and INITIALIZE the model
     with the same weights for different runs.
