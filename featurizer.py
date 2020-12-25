@@ -78,4 +78,19 @@ class Featurizer(object):
         return True
 
     def train(self, datasets: List[Dataset]):
-        pass
+        logger.info("Training featurizer.")
+        tracker = defaultdict(int)
+        for dataset in datasets:
+            for instance in tqdm(dataset):
+                n_grams = self.get_ngrams(instance.text)
+                for gram, count in n_grams.items():
+                    tracker[gram] += count
+
+        tracker = {
+            gram: count
+            for gram, count in tracker.items()
+            if count >= self.config.MIN_NGRAM_COUNT
+        }
+        tracker = sorted(tracker.key())
+        tracker = {gram: index for index, gram in enumerate(tracker)}
+        self.feature_map = tracker
