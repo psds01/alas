@@ -40,6 +40,24 @@ class OptimizationStrategy:
         self.n_epochs = n_epochs
         self.top_frac = top_frac
 
+    def add_loss_to_dataset(self):
+        pass
+
+    def get_optimized_dataset(self):
+        pass
+
+    def optimize(self):
+        pass
+
+    def save_weights(self, name):
+        pass
+
+    def train(self):
+        pass
+
+    def evaluate(self):
+        pass
+
 
 class BaseStrategy(OptimizationStrategy):
     name = "BaseStrategy"
