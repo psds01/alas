@@ -5,6 +5,8 @@
 /.vscode/
 create.py
 nohup.out
+/plots/
+*.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
