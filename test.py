@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from config import config
@@ -10,80 +11,51 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
+    from experiments import Experiment
+    import json
+
     logging.basicConfig(
         format=config.LOG_FORMAT, datefmt=config.DATE_FORMAT, level=logging.INFO,
     )
 
-    datasets = get_train_test_datasets(config)
-    training_dataset, testing_dataset = datasets
-    for instance in training_dataset:
-        pass
-    logger.info(instance)
-    for instance in testing_dataset:
-        pass
-    logger.info(instance)
+    config = {
+        "MIN_SAMPLES_PER_INTENT": 50,
+        "TRAIN_SPLIT": 0.7,
+        "MIN_NGRAM_COUNT": 16,
+        "HIDDEN_DIM": 256,
+        "SAVE_EVERY": 1,
+        "RAW_DATA_FILEPATH": "./data/training_data_for_query_classification.pkl",
+        "BASE_CKPTS_DIR": "./history",
+        "LOG_FORMAT": "%(asctime)s %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s",
+        "DATE_FORMAT": "%Y-%m-%d:%H:%M:%S",
+        "n_epochs": 1,
+    }
 
-    featurizer = Featurizer(config)
-    # featurizer.train(datasets)
-    # featurizer.save_to_file()
-    featurizer.load_from_file()
-    ft = featurizer.featurize("hello world")
-    # logger.info(ft)
-    featurizer.featurize_datasets(datasets)
-    for dataset in datasets:
-        for instance in dataset:
-            pass
+    params = [
+        [50, 0.6, 16, 128],
+        [50, 0.7, 16, 512],
+        [50, 0.8, 16, 128],
+        [50, 0.8, 16, 512],
+        [50, 0.9, 16, 128],
+    ]
 
-    logger.info(
-        "\nText={}, \nintent={},\nfeature shape={},\nlabel={}.".format(
-            instance.text, instance.intent, instance.feature.shape, instance.label
+    for i, param in enumerate(params):
+        MIN_SAMPLES_PER_INTENT, TRAIN_SPLIT, MIN_NGRAM_COUNT, HIDDEN_DIM = param
+
+        # MIN_SAMPLES_PER_INTENT, MIN_NGRAM_COUNT, HIDDEN_DIM = list(
+        #     map(int, [MIN_SAMPLES_PER_INTENT, MIN_NGRAM_COUNT, HIDDEN_DIM])
+        # )
+        config["MIN_SAMPLES_PER_INTENT"] = MIN_SAMPLES_PER_INTENT
+        config["MIN_NGRAM_COUNT"] = MIN_NGRAM_COUNT
+        config["HIDDEN_DIM"] = HIDDEN_DIM
+        config["TRAIN_SPLIT"] = TRAIN_SPLIT
+        dt = datetime.datetime.now()
+        experiment_name = "experiment_{}_{}".format(
+            i + 1, dt.isoformat().replace("-", "_").replace(":", "_").split(".")[0]
         )
-    )
+        from pprint import pprint
 
-    logger.info((instance.feature.shape, instance.label.shape))
-
-    # sizes
-    n_features = len(featurizer.feature_map)
-    n_hidden = config.HIDDEN_DIM
-    n_classes = len(featurizer.label_map)
-    init_filepath = config.INIT_MODEL_PATH
-    net, criterion, optimizer = get_net_criterion_optimizer(
-        n_features=n_features,
-        n_hidden=n_hidden,
-        n_classes=n_classes,
-        init_filepath=init_filepath,
-    )
-
-    logger.info("Testing Opt strats.")
-
-    params = list(range(9))
-    trainer = BaseStrategy(*params)
-
-    def get_sample_print(trainer):
-        return "::".join(
-            map(
-                str,
-                [
-                    trainer.name,
-                    trainer.experiment_id,
-                    trainer.net,
-                    trainer.criterion,
-                    trainer.optimizer,
-                    trainer.train_dataset,
-                    trainer.test_dataset,
-                    trainer.n_epochs,
-                    trainer.top_frac,
-                    trainer.config,
-                ],
-            )
-        )
-
-    logger.info(get_sample_print(trainer))
-
-    params = [x + 1 for x in params]
-    trainer = TopPopulationStrategy(*params)
-    logger.info(get_sample_print(trainer))
-
-    params = [x + 5 for x in params]
-    trainer = TopPercentageStrategy(*params)
-    logger.info(get_sample_print(trainer))
+        pprint(config)
+        expt = Experiment(experiment_name, config)
+        # expt.save_config()
+        expt.run()
