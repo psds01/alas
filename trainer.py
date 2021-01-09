@@ -94,6 +94,7 @@ class OptimizationStrategy:
             filepath = os.path.join(
                 self.config.BASE_CKPTS_DIR,
                 self.experiment_id,
+                "ckpts",
                 str(self.top_frac),
                 self.name,
                 "weights",
@@ -112,16 +113,25 @@ class OptimizationStrategy:
         test_y: np.ndarray,
         train_pred: np.ndarray,
         test_pred: np.ndarray,
+        train_pred_scores: np.ndarray,
+        test_pred_scores: np.ndarray,
+        train_losses: List,
+        test_losses: List,
     ) -> None:
         stats = {
             "train_y": train_y.tolist(),
             "test_y": test_y.tolist(),
             "train_pred": train_pred.tolist(),
             "test_pred": test_pred.tolist(),
+            "train_pred_scores": train_pred_scores.tolist(),
+            "test_pred_scores": test_pred_scores.tolist(),
+            "train_losses": train_losses,
+            "test_losses": test_losses,
         }
         filepath = os.path.join(
             self.config.BASE_CKPTS_DIR,
             self.experiment_id,
+            "ckpts",
             str(self.top_frac),
             self.name,
             "stats",
@@ -151,12 +161,35 @@ class OptimizationStrategy:
         train_pred = self.net(train_X)
         test_pred = self.net(test_X)
 
+        # use softmax instead
+        train_pred = torch.softmax(train_pred, axis=1)
+        test_pred = torch.softmax(test_pred, axis=1)
+
         # get the predicted class indices
-        train_pred = torch.argmax(train_pred, axis=1).numpy()
-        test_pred = torch.argmax(test_pred, axis=1).numpy()
+        train_pred = torch.max(train_pred, axis=1)
+        test_pred = torch.max(test_pred, axis=1)
+
+        train_pred_scores = train_pred.values.detach().numpy()
+        test_pred_scores = test_pred.values.detach().numpy()
+
+        train_pred = train_pred.indices.numpy()
+        test_pred = test_pred.indices.numpy()
+
+        train_losses = [x.loss.item() for x in self.train_dataset]
+        test_losses = [x.loss.item() for x in self.test_dataset]
 
         if save:
-            self.save_stats(epoch, train_y, test_y, train_pred, test_pred)
+            self.save_stats(
+                epoch,
+                train_y,
+                test_y,
+                train_pred,
+                test_pred,
+                train_pred_scores,
+                test_pred_scores,
+                train_losses,
+                test_losses,
+            )
 
         mean_acc_train = round(np.mean(train_y == train_pred), 3)
         mean_acc_test = round(np.mean(test_y == test_pred), 3)
