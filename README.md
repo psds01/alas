@@ -18,6 +18,7 @@ Table of Content:
    - [Featurization](#Featurization)
    - [Model](#Model)
    - [Optimization](#Optimization)
+   - [Evaluation](#Evaluation)
  - [Applications](#Applications)
  - [Write-up](#Write-up)
 
