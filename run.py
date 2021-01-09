@@ -1,8 +1,11 @@
+import datetime
+import json
 import logging
 
 from tqdm import tqdm
 
 from config import config
+from experiments import Experiment
 from featurizer import Featurizer
 from model import get_net_criterion_optimizer
 from trainer import BaseStrategy, TopPercentageStrategy, TopPopulationStrategy
@@ -18,45 +21,37 @@ if __name__ == "__main__":
         format=config.LOG_FORMAT, datefmt=config.DATE_FORMAT, level=logging.INFO,
     )
 
-    # get dataset and featurizer
-    datasets = get_train_test_datasets(config)
-    train_dataset, test_dataset = datasets
-    featurizer = Featurizer(config)
-    featurizer.load_from_file()
-    featurizer.featurize_datasets(datasets)
+    config = {
+        "MIN_SAMPLES_PER_INTENT": 50,
+        "TRAIN_SPLIT": 0.7,
+        "MIN_NGRAM_COUNT": 16,
+        "HIDDEN_DIM": 256,
+        "SAVE_EVERY": 1,
+        "RAW_DATA_FILEPATH": "./data/training_data_for_query_classification.pkl",
+        "BASE_CKPTS_DIR": "./history",
+        "LOG_FORMAT": "%(asctime)s %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s",
+        "DATE_FORMAT": "%Y-%m-%d:%H:%M:%S",
+        "n_epochs": 256,
+    }
 
-    # model
-    n_features = len(featurizer.feature_map)
-    n_hidden = config.HIDDEN_DIM
-    n_classes = len(featurizer.label_map)
-    init_filepath = config.INIT_MODEL_PATH
-    experiment_id = "simple"
-    save_every = 2
-    config.SAVE_EVERY = save_every
-    n_epochs = 128
-    for top_frac in tqdm(range(9, 0, -2)):
-        top_frac = round(0.1 * top_frac, 1)
-        logger.info("\n\nRunning expt with top frac = {}".format(top_frac))
-        for trainer in [BaseStrategy, TopPopulationStrategy, TopPercentageStrategy]:
+    params = [
+        [50, 0.6, 16, 128],
+        [50, 0.7, 16, 512],
+        [50, 0.8, 16, 128],
+        [50, 0.8, 16, 512],
+        [50, 0.9, 16, 128],
+    ]
 
-            net, criterion, optimizer = get_net_criterion_optimizer(
-                n_features=n_features,
-                n_hidden=n_hidden,
-                n_classes=n_classes,
-                init_filepath=init_filepath,
-            )
+    for i, param in enumerate(params):
+        MIN_SAMPLES_PER_INTENT, TRAIN_SPLIT, MIN_NGRAM_COUNT, HIDDEN_DIM = param
+        config["MIN_SAMPLES_PER_INTENT"] = MIN_SAMPLES_PER_INTENT
+        config["MIN_NGRAM_COUNT"] = MIN_NGRAM_COUNT
+        config["HIDDEN_DIM"] = HIDDEN_DIM
+        config["TRAIN_SPLIT"] = TRAIN_SPLIT
 
-            params = [
-                experiment_id,
-                net,
-                criterion,
-                optimizer,
-                train_dataset,
-                test_dataset,
-                n_epochs,
-                top_frac,
-                config,
-            ]
-
-            trainer = trainer(*params)
-            trainer.train()
+        dt = datetime.datetime.now()
+        experiment_name = "experiment_{}_{}".format(
+            i + 1, dt.isoformat().replace("-", "_").replace(":", "_").split(".")[0]
+        )
+        expt = Experiment(experiment_name, config)
+        expt.run()
