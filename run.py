@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 
@@ -48,10 +47,6 @@ if __name__ == "__main__":
         config["MIN_NGRAM_COUNT"] = MIN_NGRAM_COUNT
         config["HIDDEN_DIM"] = HIDDEN_DIM
         config["TRAIN_SPLIT"] = TRAIN_SPLIT
-
-        dt = datetime.datetime.now()
-        experiment_name = "experiment_{}_{}".format(
-            i + 1, dt.isoformat().replace("-", "_").replace(":", "_").split(".")[0]
-        )
+        experiment_name = "experiment_{}".format(i + 1)
         expt = Experiment(experiment_name, config)
         expt.run()
