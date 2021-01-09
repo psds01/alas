@@ -7,6 +7,9 @@ create.py
 nohup.out
 *plots*
 *.ipynb
+/references/
+*ckpts*
+*data*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
