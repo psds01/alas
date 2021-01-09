@@ -38,6 +38,7 @@ class Experiment:
             c.BASE_CKPTS_DIR, self.name, "data", "label_map.json"
         )
         c.INIT_MODEL_PATH = os.path.join(c.BASE_CKPTS_DIR, self.name, "init.ckpt")
+        c.FINAL_MODEL_PATH = os.path.join(c.BASE_CKPTS_DIR, self.name, "final.ckpt")
 
         self.config = c
         logger.info("Created config for the experiment.")

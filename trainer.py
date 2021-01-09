@@ -221,6 +221,9 @@ class OptimizationStrategy:
 
             # eval on train and test dataset
             self.evaluate(epoch, to_save)
+        
+        # save final trained state for transfer learning and fine-tuning
+        torch.save(self.net.state_dict(), self.config.FINAL_MODEL_PATH)
 
 
 class BaseStrategy(OptimizationStrategy):
