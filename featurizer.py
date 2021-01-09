@@ -62,6 +62,12 @@ class Featurizer(object):
     def encode_label(self, label: Text) -> np.ndarray:
         return np.array([self.label_map[label]])
 
+    def load_or_train(self, datasets: List[Dataset]):
+        if os.path.exists(self.config.FEATURE_MAP_FILEPATH):
+            self.load_from_file()
+        else:
+            self.train(datasets)
+
     def load_from_file(self):
         logger.info("Loading feature map.")
         self.feature_map = json.load(open(self.config.FEATURE_MAP_FILEPATH, "r"))
@@ -118,5 +124,5 @@ class Featurizer(object):
                 arr = torch.Tensor(arr.reshape(1, -1))
                 instance.label = label
                 instance.feature = arr
-        logger.info("Added features and labels to instances from datasets.I")
+        logger.info("Added features and labels to instances from datasets.")
         return datasets
