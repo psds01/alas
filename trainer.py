@@ -221,9 +221,17 @@ class OptimizationStrategy:
 
             # eval on train and test dataset
             self.evaluate(epoch, to_save)
-        
-        # save final trained state for transfer learning and fine-tuning
-        torch.save(self.net.state_dict(), self.config.FINAL_MODEL_PATH)
+
+        # save final trained state for transfer learning and fine-tuning by
+        filepath = os.path.join(
+            self.config.BASE_CKPTS_DIR,
+            self.experiment_id,
+            "ckpts",
+            str(self.top_frac),
+            self.name,
+            "final.ckpt",
+        )
+        torch.save(self.net.state_dict(), filepath)
 
 
 class BaseStrategy(OptimizationStrategy):
