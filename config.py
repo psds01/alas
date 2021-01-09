@@ -16,7 +16,7 @@ class Config:
     FEATURE_MAP_FILEPATH = "./data/feature_map.json"
     LABEL_MAP_FILEPATH = "./data/label_map.json"
     INIT_MODEL_PATH = "./init_model.pt"
-    BASE_CKPTS_DIR = "./ckpts"
+    BASE_CKPTS_DIR = "./history"
 
     #
     LOG_FORMAT = "%(asctime)s %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s"
