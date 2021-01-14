@@ -24,7 +24,9 @@ class NNModel(nn.Module):
         return x
 
 
-def get_net_criterion_optimizer(n_features: int, n_hidden: int, n_classes: int, init_filepath: os.PathLike):
+def get_net_criterion_optimizer(
+    n_features: int, n_hidden: int, n_classes: int, init_filepath: os.PathLike
+):
     """
     Utility to define and INITIALIZE the model
     with the same weights for different runs.
