@@ -81,9 +81,9 @@ class Experiment:
 
         self.save_config()
 
-        for top_frac in tqdm(range(9, 0, -1)):
-            top_frac = round(0.1 * top_frac, 1)
-            logger.info("\n\nRunning expt with top frac = {}".format(top_frac))
+        for sampling_rate in tqdm(range(9, 0, -1)):
+            sampling_rate = round(0.1 * sampling_rate, 1)
+            logger.info("\n\nRunning expt with sampling rate = {}".format(sampling_rate))
             for trainer in [BaseStrategy, TopPopulationStrategy, TopPercentageStrategy]:
 
                 net, criterion, optimizer = get_net_criterion_optimizer(
@@ -101,7 +101,7 @@ class Experiment:
                     train_dataset,
                     test_dataset,
                     n_epochs,
-                    top_frac,
+                    sampling_rate,
                     self.config,
                 ]
 

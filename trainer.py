@@ -40,13 +40,13 @@ class OptimizationStrategy:
         train_dataset: Dataset,
         test_dataset: Dataset,
         n_epochs: int,
-        top_frac: float = 1.0,
+        sampling_rate: float = 1.0,
         config: Config = config,
     ):
         """
         `experiment_id` :The initial source of randomness 
                     remains the same throughout an experiment.
-        `top_frac` :for the same run of experiment (aka same source or randomness
+        `sampling_rate` :for the same run of experiment (aka same source or randomness
                     aka model is initialized with the same weights), different %
                     tile/age population
         """
@@ -57,7 +57,7 @@ class OptimizationStrategy:
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
         self.n_epochs = n_epochs
-        self.top_frac = top_frac
+        self.sampling_rate = sampling_rate
         self.config = config
 
     def save_losses(self):
@@ -95,7 +95,7 @@ class OptimizationStrategy:
                 self.config.BASE_CKPTS_DIR,
                 self.experiment_id,
                 "ckpts",
-                str(self.top_frac),
+                str(self.sampling_rate),
                 self.name,
                 "weights",
                 str(basename),
@@ -132,7 +132,7 @@ class OptimizationStrategy:
             self.config.BASE_CKPTS_DIR,
             self.experiment_id,
             "ckpts",
-            str(self.top_frac),
+            str(self.sampling_rate),
             self.name,
             "stats",
             str(basename),
@@ -227,7 +227,7 @@ class OptimizationStrategy:
             self.config.BASE_CKPTS_DIR,
             self.experiment_id,
             "ckpts",
-            str(self.top_frac),
+            str(self.sampling_rate),
             self.name,
             "final.ckpt",
         )
@@ -252,7 +252,7 @@ class TopPopulationStrategy(OptimizationStrategy):
         super().__init__(*args)
 
     def get_optimized_dataset(self) -> Dataset:
-        length = int(self.top_frac * len(self.train_dataset)) + 1
+        length = int(self.sampling_rate * len(self.train_dataset)) + 1
         sorted_train_dataset = sorted(
             self.train_dataset, key=lambda x: x.loss, reverse=True
         )
@@ -271,7 +271,7 @@ class TopPercentageStrategy(OptimizationStrategy):
             self.train_dataset, key=lambda x: x.loss, reverse=True
         )
         total_loss = sum(x.loss for x in self.train_dataset)
-        threshold = self.top_frac * total_loss
+        threshold = self.sampling_rate * total_loss
         total_loss = 0
         for index, instance in enumerate(sorted_train_dataset):
             if total_loss > threshold:
