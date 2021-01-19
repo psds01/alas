@@ -5,11 +5,13 @@
 /.vscode/
 create.py
 nohup.out
-*plots*
+plots-*
+*.png
 *.ipynb
 /references/
 *ckpts*
 *data*
+diff_init
 *tmp*
 
 # Byte-compiled / optimized / DLL files
