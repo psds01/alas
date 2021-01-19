@@ -1,0 +1,20 @@
+{
+    "MIN_SAMPLES_PER_INTENT": 50,
+    "TRAIN_SPLIT": 0.6,
+    "MIN_NGRAM_COUNT": 16,
+    "HIDDEN_DIM": 128,
+    "SAVE_EVERY": 1,
+    "RAW_DATA_FILEPATH": "./data/training_data_for_query_classification.pkl",
+    "BASE_CKPTS_DIR": "./history",
+    "LOG_FORMAT": "%(asctime)s %(levelname)-2s [%(filename)s:%(lineno)d] %(message)s",
+    "DATE_FORMAT": "%Y-%m-%d:%H:%M:%S",
+    "n_epochs": 256,
+    "TRAINING_DATA_FILEPATH": "./history/experiment_1/data/training_data.json",
+    "TESTING_DATA_FILEPATH": "./history/experiment_1/data/testing_data.json",
+    "FEATURE_MAP_FILEPATH": "./history/experiment_1/data/feature_map.json",
+    "LABEL_MAP_FILEPATH": "./history/experiment_1/data/label_map.json",
+    "INIT_MODEL_PATH": "./history/experiment_1/init.ckpt",
+    "FINAL_MODEL_PATH": "./history/experiment_1/final.ckpt",
+    "n_features": 522,
+    "n_classes": 32
+}
